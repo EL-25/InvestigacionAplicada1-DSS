@@ -4,11 +4,34 @@
     <meta charset="UTF-8">
     <title>Chamby - Iniciar Sesión</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Animate.css para efecto fadeIn -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
     <div class="bg-white p-8 rounded-lg shadow-lg w-96">
         <h2 class="text-2xl font-bold mb-6 text-center text-blue-700">Chamby</h2>
-        
+
+        {{-- Mensajes de error por sesión --}}
+        @if(session('error'))
+            <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative animate__animated animate__fadeIn" role="alert">
+                <strong class="font-bold">Error: </strong>
+                <span class="block sm:inline">{{ session('error') }}</span>
+            </div>
+        @endif
+
+        {{-- Mensajes de error por validaciones --}}
+        @if($errors->any())
+            <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative animate__animated animate__fadeIn" role="alert">
+                <strong class="font-bold">Ups! </strong>
+                <span class="block sm:inline">Hubo problemas con tus datos:</span>
+                <ul class="mt-2 text-left list-disc list-inside">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form action="{{ route('login.entrar') }}" method="POST">
             @csrf
             <div class="mb-4">
@@ -16,12 +39,16 @@
                 <input type="email" name="correo" class="w-full border p-2 rounded mt-1" required>
             </div>
             
-            <div class="mb-6">
-                <label class="block text-gray-700">Contraseña</label>
-                <input type="password" name="contrasena" class="w-full border p-2 rounded mt-1" required>
-            </div>
-            
-            <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded font-bold hover:bg-blue-700">
+            <div class="mb-6 relative">
+    <label class="block text-gray-700">Contraseña</label>
+    <input type="password" id="contrasena" name="contrasena" class="w-full border p-2 rounded mt-1 pr-10" required>
+    <!-- Botón mostrar/ocultar -->
+    <button type="button" onclick="togglePassword()" class="absolute right-2 top-9 text-gray-500 hover:text-blue-600">
+        Mostrar
+    </button>
+    
+        </div>
+          <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded font-bold hover:bg-blue-700">
                 Entrar
             </button>
         </form>
@@ -30,5 +57,19 @@
             ¿No tienes cuenta? <a href="{{ route('registro') }}" class="text-blue-500">Regístrate aquí</a>
         </p>
     </div>
+
+    <script>
+       function togglePassword() {
+    const input = document.getElementById("contrasena");
+    const button = event.target;
+    if (input.type === "password") {
+        input.type = "text";
+        button.textContent = "Ocultar";
+    } else {
+        input.type = "password";
+        button.textContent = "Mostrar";
+    }
+    }
+    </script>
 </body>
 </html>
